@@ -134,7 +134,7 @@ void loop() {
 void signal(int dir, int intensity){ //dir: 6/5  = left/right, intensity: 1/2/3
   Serial.println("signal evoked with the variables dir/intensity: " + String(dir)+ "/" + String(intensity) );
   bool both = false;
-  int voltage = 182; //150 = 3v, x/5*255
+  int voltage = 255; //150 = 3v, x/5*255
   //set which motor vibrates
   switch(dir){
     case 1: both = false;vibePin = 6;break;//activate left motorpin
@@ -191,7 +191,7 @@ void setIntensity(int intensity){
         reps = 2;
         break;
       case 3:
-        vibeOn = 500;
+        vibeOn = 300;
         vibeOff = 0;
         reps = 1;
         break;
@@ -203,12 +203,12 @@ void setIntensity(int intensity){
       switch(intensity){
       case 1:
         vibeOn = 600;
-        vibeOff = 600;
-        reps = 3;
+        vibeOff = 0;
+        reps = 1;
         break;
       case 2:
         vibeOn = 300;
-        vibeOff = 100;
+        vibeOff = 0;
         reps = 2;
         break;
       case 3:
@@ -222,16 +222,16 @@ void setIntensity(int intensity){
       switch(intensity){
       case 1:
         vibeOn = 600;
-        vibeOff = 600;
+        vibeOff = 300;
         reps = 3;
         break;
       case 2:
         vibeOn = 300;
-        vibeOff = 100;
+        vibeOff = 150;
         reps = 2;
         break;
       case 3:
-        vibeOn = 100;
+        vibeOn = 150;
         vibeOff = 0;
         reps = 1;
         break;
