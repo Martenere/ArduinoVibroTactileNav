@@ -177,7 +177,7 @@ void vibrateBothMotors(int amount){
 }
 
 void setIntensity(int intensity){
-  if(vibrationProfile==0){
+  if(vibrationProfile==0){ //MOVING
     Serial.println("set intensity with profile 0");
       switch(intensity){
       case 1:
@@ -191,35 +191,35 @@ void setIntensity(int intensity){
         reps = 2;
         break;
       case 3:
-        vibeOn = 300;
+        vibeOn = 500;
         vibeOff = 0;
         reps = 1;
         break;
     }
   }
-  else if(vibrationProfile==1){
+  else if(vibrationProfile==1){//C.1 Combo Wombo II - Electric Boogaloo
     
     Serial.println("set intensity with profile 1");
       switch(intensity){
       case 1:
-        vibeOn = 600;
-        vibeOff = 0;
-        reps = 1;
+        vibeOn = 400;
+        vibeOff = 200;
+        reps = 3;
         break;
       case 2:
-        vibeOn = 300;
-        vibeOff = 0;
+        vibeOn = 200;
+        vibeOff = 150;
         reps = 2;
         break;
       case 3:
         vibeOn = 100;
-        vibeOff = 0;
-        reps = 1;
+        vibeOff = 100;
+        reps = 2;
         break;
     }
   }
     else {
-      switch(intensity){
+      switch(intensity){//Combo
       case 1:
         vibeOn = 600;
         vibeOff = 300;
