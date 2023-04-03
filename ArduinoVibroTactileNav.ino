@@ -151,13 +151,13 @@ void signalVibrationMotors(int dir, int intensity){ //dir: 6/5  = left/right, in
     case 2: both = false; vibePin = 5;break;//activate right motor pin
     case 3: both = true;vibePin = 0;break; //activate both pins
   }
-  //set what intensity level the motor will vibrate in 
+  //set what intensity level the motor will vibrate in - 
   switch(dir){
-    case 1:
-    case 2:
+    case 1://left
+    case 2://right
     setVibrationPatternLeftRight(intensity);
     break;
-    case 3:
+    case 3://roundabout
     setVibrationPatternBoth(intensity);
     break;
 
