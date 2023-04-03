@@ -32,6 +32,9 @@ BLEIntCharacteristic actionTypeCharacteristic("1d57b590-bcd5-11ed-afa1-0242ac120
 BLEIntCharacteristic vibrationProfileCharacteristic("ce2d2513-9515-488b-bbe0-2ebf9b886a37", BLERead | BLEWrite);
 
 
+BLEIntCharacteristic roundaboutIndexCharacteristic("6ef889f2-ced6-11ed-afa1-0242ac120002", BLERead | BLEWrite);
+
+
 bool lostConnection = true;
 int vibePin;
 int vibeOn;
@@ -39,6 +42,7 @@ int vibeOff;
 int reps;
 int currentActionType = 0;
 int vibrationProfile = 0;
+int roundaboutIndex = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -69,6 +73,7 @@ void setup() {
   manouverService.addCharacteristic(intensityCharacteristic);
   manouverService.addCharacteristic(actionTypeCharacteristic);
   manouverService.addCharacteristic(vibrationProfileCharacteristic);
+  manouverService.addCharacteristic(roundaboutIndexCharacteristic);
 
   // add service
   BLE.addService(manouverService);
@@ -101,6 +106,11 @@ void loop() {
         Serial.println(actionTypeCharacteristic.value());
         currentActionType = actionTypeCharacteristic.value();
       }
+      if (roundaboutIndexCharacteristic.written()){
+        Serial.print(F("Recived roundabout index: "));
+        Serial.println(roundaboutIndexCharacteristic.value());
+        roundaboutIndex = roundaboutIndexCharacteristic.value();
+      }
       //Update intensity
       if (intensityCharacteristic.written()) {
         Serial.print(F("Recived  intensity-value: "));
@@ -109,7 +119,7 @@ void loop() {
         uint16_t intensity = *value_ptr;
 
         Serial.println(intensity);
-        signal(currentActionType, intensity);
+        signalVibrationMotors(currentActionType, intensity);
 
         
       }
@@ -131,7 +141,7 @@ void loop() {
     lostConnection = false;}
   }
 
-void signal(int dir, int intensity){ //dir: 6/5  = left/right, intensity: 1/2/3
+void signalVibrationMotors(int dir, int intensity){ //dir: 6/5  = left/right, intensity: 1/2/3
   Serial.println("signal evoked with the variables dir/intensity: " + String(dir)+ "/" + String(intensity) );
   bool both = false;
   int voltage = 255; //150 = 3v, x/5*255
@@ -142,7 +152,17 @@ void signal(int dir, int intensity){ //dir: 6/5  = left/right, intensity: 1/2/3
     case 3: both = true;vibePin = 0;break; //activate both pins
   }
   //set what intensity level the motor will vibrate in 
-  setIntensity(intensity);
+  switch(dir){
+    case 1:
+    case 2:
+    setVibrationPatternLeftRight(intensity);
+    break;
+    case 3:
+    setVibrationPatternBoth(intensity);
+    break;
+
+  }
+  
 
 //Start vibration pattern 
   unsigned long currentTime;
@@ -176,7 +196,7 @@ void vibrateBothMotors(int amount){
 
 }
 
-void setIntensity(int intensity){
+void setVibrationPatternLeftRight(int intensity){
   if(vibrationProfile==0){ //MOVING
     Serial.println("set intensity with profile 0");
       switch(intensity){
@@ -237,4 +257,27 @@ void setIntensity(int intensity){
         break;
     }
   }
+}
+
+void setVibrationPatternBoth(int intensity){
+    roundaboutIndex = roundaboutIndexCharacteristic.value();
+    Serial.println("set intensity with profile 0");
+      switch(intensity){
+      case 1:
+        vibeOn = 300;
+        vibeOff = 300;
+        reps = roundaboutIndex;
+        break;
+      case 2:
+        vibeOn = 300;
+        vibeOff = 300;
+        reps = roundaboutIndex;
+        break;
+      case 3:
+        vibeOn = 100;
+        vibeOff = 100;
+        reps = 2;
+        break;
+    }
+ 
 }
